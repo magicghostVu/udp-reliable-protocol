@@ -1,0 +1,4 @@
+/.idea/*
+/logs/*
+/target/*
+/mvn_java_10.iml
