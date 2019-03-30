@@ -1,6 +1,6 @@
-package pack.testwithnio;
+package mypack.testwithnio;
 
-import pack.log.LoggingService;
+import mypack.log.LoggingService;
 
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;

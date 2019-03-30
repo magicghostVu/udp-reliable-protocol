@@ -1,9 +1,10 @@
-package pack;
+package mypack;
 
+import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import com.google.gson.Gson;
-import pack.log.LoggingService;
-import scala.compat.java8.JFunction;
+import mypack.log.LoggingService;
+import mypack.myactors.mm.HelloActor;
 
 public class Main {
     public static void main(String[] args) {
@@ -15,9 +16,11 @@ public class Main {
         System.out.println("new p is " + p2);
 
         LoggingService.getInstance().getLogger().info("log from log 4j {}", 2);
-        ActorSystem.create();
+        var actorSystem = ActorSystem.create();
 
-        JFunction function;
+        ActorRef ref = actorSystem.actorOf(HelloActor.props());
+
+        ref.tell("Hello world", ActorRef.noSender());
 
         //DataGra
     }

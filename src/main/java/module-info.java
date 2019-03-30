@@ -1,4 +1,4 @@
-module mvn.java.ten {
+open module mvn.java.ten {
 
     //apache common
     requires org.apache.commons.io;
@@ -18,12 +18,11 @@ module mvn.java.ten {
     requires scala.library;
     requires typesafe.config;
     requires org.scala.java.eight.compat;
+    requires jdk.unsupported;
 
     // gson
     requires java.sql;
     requires gson;
-    opens pack to gson;
 
-
-    exports pack;
+    //exports mypack;
 }
