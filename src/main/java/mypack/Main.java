@@ -14,14 +14,9 @@ public class Main {
         System.out.println("json is " + json);
         Person p2 = gson.fromJson(json, Person.class);
         System.out.println("new p is " + p2);
-
         LoggingService.getInstance().getLogger().info("log from log 4j {}", 2);
         var actorSystem = ActorSystem.create();
-
         ActorRef ref = actorSystem.actorOf(HelloActor.props());
-
         ref.tell("Hello world", ActorRef.noSender());
-
-        //DataGra
     }
 }

@@ -23,6 +23,4 @@ open module mvn.java.ten {
     // gson
     requires java.sql;
     requires gson;
-
-    //exports mypack;
 }
