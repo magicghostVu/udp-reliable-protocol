@@ -1,7 +1,6 @@
 package mypack.testwithnio;
 
 import mypack.log.LoggingService;
-import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.net.DatagramPacket;
@@ -10,32 +9,26 @@ import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.util.Arrays;
 import java.util.Scanner;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 public class MainStartServerUdp {
 
     private static int buffSize = 1024;
 
     public static void main(String[] args) {
-
-
-        ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
-
+        //var scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
         var address = new InetSocketAddress("localhost", 9099);
         Runnable r = () -> {
             try {
                 var channelUdp = DatagramChannel.open();
                 // none blocking
                 channelUdp.configureBlocking(false);
-
                 var socket = channelUdp.socket();
                 socket.bind(address);
                 LoggingService.getInstance().getLogger().info("udp bound to {}", address);
                 while (true) {
                     var byteBuffer = ByteBuffer.allocate(buffSize);
                     var addSend = channelUdp.receive(byteBuffer);
+                    // flip to ready read
                     byteBuffer.flip();
                     var sizeData = -1;
                     if (byteBuffer.limit() > 0) {
@@ -48,9 +41,6 @@ public class MainStartServerUdp {
                         bytes = "this is response".getBytes();
                         var packetResponse = new DatagramPacket(bytes, bytes.length, addSend);
                         socket.send(packetResponse);
-
-                        //channelUdp.dis
-
                     }
                     byteBuffer.clear();
                 }
