@@ -1,5 +1,6 @@
 package mypack.testwithnio;
 
+import io.netty.buffer.ByteBuf;
 import mypack.log.LoggingService;
 import org.apache.commons.lang3.mutable.MutableInt;
 
@@ -16,7 +17,7 @@ public class MainStartServerUdp {
 
     public static void main(String[] args) {
         //var scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
-        var address = new InetSocketAddress("localhost", 9099);
+        final var address = new InetSocketAddress("localhost", 9099);
         Runnable r = () -> {
             try {
                 var channelUdp = DatagramChannel.open();
@@ -38,9 +39,21 @@ public class MainStartServerUdp {
                         byteBuffer.get(bytes);
                         String msg = new String(bytes);
                         LoggingService.getInstance().getLogger().info("msg from client {} is {}", addSend, msg);
+
+
                         bytes = "this is response".getBytes();
-                        var packetResponse = new DatagramPacket(bytes, bytes.length, addSend);
-                        socket.send(packetResponse);
+
+                        //note: if you want use DatagramPacket, channel non-blocking is not config to false
+
+                        /*var packetResponse = new DatagramPacket(bytes, bytes.length, addSend);
+                        socket.send(packetResponse);*/
+
+
+                        var byteBufferResponse = ByteBuffer.allocate(buffSize);
+                        byteBufferResponse.put(bytes);
+                        byteBufferResponse.flip();
+
+                        channelUdp.send(byteBufferResponse, addSend);
                     }
                     byteBuffer.clear();
                 }
@@ -69,6 +82,7 @@ public class MainStartServerUdp {
             LoggingService.getInstance().getLogger().info("client connected to {}", address);
             var sendData = list.get(0).getBytes();
             var bf = ByteBuffer.allocate(buffSize);
+
             bf.put(sendData);
             bf.flip();
             datagramChannelClient.write(bf);
