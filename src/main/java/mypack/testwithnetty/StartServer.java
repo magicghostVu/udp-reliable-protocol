@@ -9,7 +9,7 @@ import mypack.testwithnetty.handlers.MyChannelInit;
 
 public class StartServer {
 
-    private static int portNetty = 9098;
+    public static int portNetty = 9098;
     public static void main(String[] args) {
         try {
             var wgr = new NioEventLoopGroup();
@@ -21,7 +21,7 @@ public class StartServer {
             bootstrap.option(ChannelOption.SO_BACKLOG, 1);
             bootstrap.handler(new MyChannelInit());
             bootstrap.channel(NioDatagramChannel.class);
-            bootstrap.bind("localhost", portNetty).sync();
+            bootstrap.bind("0.0.0.0", portNetty).sync();
         } catch (Exception e) {
             LoggingService.getInstance().getLogger().error("err while start netty", e);
         }

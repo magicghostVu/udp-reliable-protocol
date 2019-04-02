@@ -15,10 +15,7 @@ public class IncomingPackageHandler extends SimpleChannelInboundHandler<Datagram
     protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket msg) {
         //với Udp, ctx ở đây là kênh của server,
         // vì tất cả các client không có kênh truyền, mà chỉ có địa chỉ gửi
-
-
         LoggingService.getInstance().getLogger().error("cal from ", new Exception());
-
         var content = msg.content();
         content.retain();
         LoggingService.getInstance().getLogger().info("content is {} from {}", content, msg.sender());
@@ -30,9 +27,9 @@ public class IncomingPackageHandler extends SimpleChannelInboundHandler<Datagram
     }
 
     // được gọi khi đọc xong 1 package
+    // đẩy tất cả các data từ server đang đợi ra bên ngoài
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {
         ctx.flush();
-        //LoggingService.getInstance().getLogger().error("call from ", new Exception());
     }
 }
