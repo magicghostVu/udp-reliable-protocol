@@ -5,7 +5,11 @@ import akka.actor.ActorRef;
 import akka.actor.Props;
 import mypack.log.LoggingService;
 import mypack.servicewrap.actsys.ActorSystemContainer;
+import org.apache.commons.lang3.mutable.MutableInt;
 
+
+// actor này chỉ là cánh cổng hay là logic thật?
+// tạm thời sẽ cài đặt đơn giản
 public class LogicServerActor extends AbstractActor {
 
 
@@ -13,10 +17,18 @@ public class LogicServerActor extends AbstractActor {
         return Props.create(LogicServerActor.class);
     }
 
+
+    private MutableInt autoIndexUid;
+
+    //
+    //private Map<String,>
+
+
     private static ActorRef _self;
 
     public LogicServerActor() {
         _self = getSelf();
+        autoIndexUid = new MutableInt();
         LoggingService.getInstance().getLogger().info("Server logic actor ready");
     }
 
