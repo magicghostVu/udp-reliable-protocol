@@ -1,11 +1,11 @@
 package mypack.testwithnetty.clienttest;
 
-import akka.actor.ActorRef;
 import mypack.servicewrap.actsys.ActorSystemContainer;
-import mypack.testwithnetty.clienttest.actors.ClientActor;
+import mypack.testwithnetty.clienttest.actors.ClientNetWorkActor;
 
 public class StartClient {
     public static void main(String[] args) {
-        ActorRef clientActorRef = ActorSystemContainer.getInstance().createNew(ClientActor.props());
+        var clientActorRef = ActorSystemContainer.getInstance().createNew(ClientNetWorkActor.props());
+
     }
 }

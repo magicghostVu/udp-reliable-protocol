@@ -12,19 +12,18 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 
-public class ClientActor extends AbstractActor {
 
+// đóng vai trò để gửi và nhận gói tin, xác định package mất
+// việc có gửi lại gói tin đã mất như thế nào phụ thuộc vào actor logic
+public class ClientNetWorkActor extends AbstractActor {
     public static Props props() {
-        return Props.create(ClientActor.class);
+        return Props.create(ClientNetWorkActor.class);
     }
-
-
     // giữ socket này để gửi data lại cho server
     private DatagramSocket datagramSocket;
-
     private int defaultSizeBuf = 1500;
-
-    public ClientActor() {
+    //private TreeSet
+    public ClientNetWorkActor() {
         try {
             var datagramChannel = DatagramChannel.open();
             datagramChannel.configureBlocking(true);
@@ -42,6 +41,7 @@ public class ClientActor extends AbstractActor {
                     try {
                         //block util data available
                         datagramChannel.receive(buffer);
+                        //flip ready to read
                         buffer.flip();
                         if (buffer.limit() <= 0) continue;
                         //var tmpBuffToSend = ByteBuffer.allocate(buffer.limit());
@@ -51,12 +51,11 @@ public class ClientActor extends AbstractActor {
                         getSelf().tell(rData, ActorRef.noSender());
                         buffer.clear();
                     } catch (Exception e) {
-                        LoggingService.getInstance().getLogger().error("err in loop listen package", e);
+                        LoggingService.getInstance().getLogger().error("err in loop listen package, so break now", e);
                         break;
                     }
                 }
             };
-
 
 
         } catch (Exception e) {
@@ -67,6 +66,11 @@ public class ClientActor extends AbstractActor {
     @Override
     public Receive createReceive() {
         return receiveBuilder()
+                .match(RawDataFromServer.class, this::handleNewPackage)
                 .build();
+    }
+
+    private void handleNewPackage(RawDataFromServer dataFromServer) {
+        //datagramSocket.s
     }
 }
