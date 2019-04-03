@@ -4,7 +4,7 @@ import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import mypack.log.LoggingService;
-import mypack.testwithnetty.StartServer;
+import mypack.testwithnetty.servertest.StartServer;
 import mypack.testwithnetty.clienttest.actors.msgs.RawDataFromServer;
 
 import java.net.DatagramSocket;

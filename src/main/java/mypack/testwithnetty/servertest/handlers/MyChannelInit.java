@@ -1,4 +1,4 @@
-package mypack.testwithnetty.handlers;
+package mypack.testwithnetty.servertest.handlers;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.nio.NioDatagramChannel;
@@ -8,7 +8,6 @@ public class MyChannelInit extends ChannelInitializer<NioDatagramChannel> {
     protected void initChannel(NioDatagramChannel ch) {
         var pipeline = ch.pipeline();
         pipeline.addLast(new IncomingPackageHandler());
-        //LoggingService.getInstance().getLogger().info("client connect {}", ch.id());
     }
 
 }
