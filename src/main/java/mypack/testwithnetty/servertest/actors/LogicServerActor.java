@@ -5,6 +5,7 @@ import akka.actor.ActorRef;
 import akka.actor.Props;
 import mypack.log.LoggingService;
 import mypack.servicewrap.actsys.ActorSystemContainer;
+import mypack.testwithnetty.servertest.network.RawDataPackage;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 
@@ -36,9 +37,13 @@ public class LogicServerActor extends AbstractActor {
     @Override
     public Receive createReceive() {
         return receiveBuilder()
+                .match(RawDataPackage.class, this::newPackageComing)
                 .build();
     }
 
+    private void newPackageComing(RawDataPackage newPackage) {
+        LoggingService.getInstance().getLogger().info("received package from client {}", newPackage.getSender());
+    }
 
     public static ActorRef getActorRef() {
         return _self;

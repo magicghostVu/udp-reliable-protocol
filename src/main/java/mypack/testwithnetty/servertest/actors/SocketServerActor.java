@@ -30,7 +30,7 @@ public class SocketServerActor extends AbstractActor {
         try {
             this.ready = false;
             _self = getSelf();
-            var portNetty = 9098;
+            var portNetty = 10017;
             var wgr = new NioEventLoopGroup();
             // với udp, vì không tạo kênh kết nối với client nên là không sử dụng server bootstrap,
             // chỉ sử dụng Bootstrap
@@ -40,9 +40,12 @@ public class SocketServerActor extends AbstractActor {
             //bootstrap.option(ChannelOption.SO_BACKLOG, 1);
             bootstrap.handler(new MyChannelInit());
             bootstrap.channel(NioDatagramChannel.class);
-            bootstrap.bind("0.0.0.0", portNetty).sync();
 
-            LoggingService.getInstance().getLogger().info("ok, ready bind");
+            var host = "49.213.81.42";
+
+            bootstrap.bind(host, portNetty).sync();
+
+            LoggingService.getInstance().getLogger().info("ok, ready bind to {}/{}", host, portNetty);
 
         } catch (Exception e) {
             LoggingService.getInstance().getLogger().error("err while start netty", e);
