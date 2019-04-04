@@ -12,15 +12,10 @@ import org.apache.commons.lang3.mutable.MutableInt;
 // actor này chỉ là cánh cổng hay là logic thật?
 // tạm thời sẽ cài đặt đơn giản
 public class LogicServerActor extends AbstractActor {
-
-
     public static Props props() {
         return Props.create(LogicServerActor.class);
     }
-
-
     private MutableInt autoIndexUid;
-
     //
     //private Map<String,>
 

@@ -9,6 +9,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import mypack.log.LoggingService;
+import mypack.mconfig.ServerConfig;
 import mypack.testwithnetty.servertest.actors.msgs.ActiveChannelServer;
 import mypack.testwithnetty.servertest.handlers.MyChannelInit;
 
@@ -30,7 +31,7 @@ public class SocketServerActor extends AbstractActor {
         try {
             this.ready = false;
             _self = getSelf();
-            var portNetty = 10017;
+            var portNetty = ServerConfig.getPort();
             var wgr = new NioEventLoopGroup();
             // với udp, vì không tạo kênh kết nối với client nên là không sử dụng server bootstrap,
             // chỉ sử dụng Bootstrap
@@ -40,13 +41,9 @@ public class SocketServerActor extends AbstractActor {
             //bootstrap.option(ChannelOption.SO_BACKLOG, 1);
             bootstrap.handler(new MyChannelInit());
             bootstrap.channel(NioDatagramChannel.class);
-
-            var host = "49.213.81.42";
-
+            var host = ServerConfig.getHost();
             bootstrap.bind(host, portNetty).sync();
-
             LoggingService.getInstance().getLogger().info("ok, ready bind to {}/{}", host, portNetty);
-
         } catch (Exception e) {
             LoggingService.getInstance().getLogger().error("err while start netty", e);
         }

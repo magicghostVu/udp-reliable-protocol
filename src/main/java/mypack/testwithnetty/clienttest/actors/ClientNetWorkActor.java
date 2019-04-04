@@ -4,9 +4,9 @@ import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import mypack.log.LoggingService;
-import mypack.testwithnetty.clienttest.actors.msgs.TestSendPackageToServer;
-import mypack.testwithnetty.servertest.StartServer;
+import mypack.mconfig.ServerConfig;
 import mypack.testwithnetty.clienttest.actors.msgs.RawDataFromServer;
+import mypack.testwithnetty.clienttest.actors.msgs.TestSendPackageToServer;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -33,7 +33,7 @@ public class ClientNetWorkActor extends AbstractActor {
             var datagramChannel = DatagramChannel.open();
             datagramChannel.configureBlocking(true);
             this.datagramSocket = datagramChannel.socket();
-            InetSocketAddress addConnect = new InetSocketAddress("49.213.81.42", StartServer.portNetty);
+            InetSocketAddress addConnect = new InetSocketAddress("127.0.0.1", ServerConfig.getPort());
             datagramSocket.connect(addConnect);
             // đợi connect
             while (!datagramSocket.isConnected()) {
@@ -88,29 +88,21 @@ public class ClientNetWorkActor extends AbstractActor {
             short cmdId = 0;
 
 
-
             ByteBuffer byteBuffer = ByteBuffer.allocate(defaultSizeBuf);
 
             byteBuffer.putShort(sequenceId);
             byteBuffer.putShort((short) acks.length);
-            for (int i = 0; i < acks.length; i++) {
-                byteBuffer.putShort(acks[i]);
+            for (short ack : acks) {
+                byteBuffer.putShort(ack);
             }
             byteBuffer.putShort(cmdId);
             var payload = new byte[5];
             byteBuffer.put(payload);
-
-
             byteBuffer.flip();
-
             var byteSend = new byte[byteBuffer.limit()];
-
             byteBuffer.get(byteSend);
             byteBuffer.clear();
-
-            //byteBuffer = ByteBuffer.wrap(byteSend);
-
-            SocketAddress sockAddr = new InetSocketAddress("49.213.81.42", 10017);
+            SocketAddress sockAddr = new InetSocketAddress(ServerConfig.getHost(), ServerConfig.getPort());
             DatagramPacket packSend = new DatagramPacket(byteSend, byteSend.length, sockAddr);
 
             datagramSocket.send(packSend);
