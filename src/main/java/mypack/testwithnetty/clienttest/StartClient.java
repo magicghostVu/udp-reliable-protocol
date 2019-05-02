@@ -6,7 +6,6 @@ import mypack.servicewrap.actsys.ActorSystemContainer;
 import mypack.testwithnetty.clienttest.actors.ClientNetWorkActor;
 import mypack.testwithnetty.clienttest.actors.msgs.TestSendPackageToServer;
 
-import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -15,18 +14,18 @@ public class StartClient {
         ServerConfig.initConfig();
         var clientActorRef = ActorSystemContainer.getInstance()
                 .createNew(ClientNetWorkActor.props());
-        var scanner = new Scanner(System.in);
+        //var scanner = new Scanner(System.in);
         /*LoggingService.getInstance().getLogger()
                 .info("press enter to send some package to server");
         scanner.next();*/
-
         var scheduleExe = Executors.newSingleThreadScheduledExecutor();
-
         Runnable r = () -> {
             clientActorRef.tell(new TestSendPackageToServer(), ActorRef.noSender());
         };
-
-        scheduleExe.scheduleAtFixedRate(r, 5000, 500, TimeUnit.MILLISECONDS);
+        var c = scheduleExe.scheduleAtFixedRate(r, 2000, 500, TimeUnit.MILLISECONDS);
+        Runnable stopSchedule = () ->
+                c.cancel(false);
+        scheduleExe.schedule(stopSchedule, 15, TimeUnit.SECONDS);
 
 
     }

@@ -27,19 +27,24 @@ public class ClientNetWorkActor extends AbstractActor {
     private DatagramSocket datagramSocket;
     private int defaultSizeBuf = 1500;
 
+
     //private TreeSet
     public ClientNetWorkActor() {
         try {
             var datagramChannel = DatagramChannel.open();
             datagramChannel.configureBlocking(true);
             this.datagramSocket = datagramChannel.socket();
-            InetSocketAddress addConnect = new InetSocketAddress("127.0.0.1", ServerConfig.getPort());
+            InetSocketAddress addConnect = new InetSocketAddress(ServerConfig.getHost(), ServerConfig.getPort());
             datagramSocket.connect(addConnect);
             // đợi connect
             while (!datagramSocket.isConnected()) {
 
             }
             LoggingService.getInstance().getLogger().info("client connected");
+
+
+            // if server is implementation native java nio
+            // should have only one thread for io
             Runnable r = () -> {
                 var buffer = ByteBuffer.allocate(defaultSizeBuf);
                 while (true) {
@@ -84,12 +89,8 @@ public class ClientNetWorkActor extends AbstractActor {
             for (var i = 0; i < acks.length; i++) {
                 acks[i] = (short) i;
             }
-
             short cmdId = 0;
-
-
             ByteBuffer byteBuffer = ByteBuffer.allocate(defaultSizeBuf);
-
             byteBuffer.putShort(sequenceId);
             byteBuffer.putShort((short) acks.length);
             for (short ack : acks) {
@@ -104,7 +105,6 @@ public class ClientNetWorkActor extends AbstractActor {
             byteBuffer.clear();
             SocketAddress sockAddr = new InetSocketAddress(ServerConfig.getHost(), ServerConfig.getPort());
             DatagramPacket packSend = new DatagramPacket(byteSend, byteSend.length, sockAddr);
-
             datagramSocket.send(packSend);
         } catch (Exception e) {
             LoggingService.getInstance().getLogger().info("err while send package to server", e);

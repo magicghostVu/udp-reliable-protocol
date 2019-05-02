@@ -24,7 +24,7 @@ public enum CmdDefine {
         else {
             synchronized (CmdDefine.class) {
                 if (mapCached != null) return mapCached.get(codeTake);
-                Map<Short, CmdDefine> tmpMap = new HashMap<>();
+                var tmpMap = new HashMap<Short, CmdDefine>();
                 for (CmdDefine c : CmdDefine.values()) {
                     tmpMap.put(c.getCode(), c);
                 }

@@ -1,19 +1,17 @@
 package mypack.testwithnio;
 
 import mypack.log.LoggingService;
-import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class MainStartServerUdp {
     private static int buffSize = 1024;
 
     public static void main(String[] args) {
-        final var address = new InetSocketAddress("localhost", 9099);
+        final var address = new InetSocketAddress("0.0.0.0", 9099);
         Runnable r = () -> {
             try {
                 var channelUdp = DatagramChannel.open();
@@ -22,9 +20,11 @@ public class MainStartServerUdp {
                 var socketUdp = channelUdp.socket();
                 socketUdp.bind(address);
                 LoggingService.getInstance().getLogger().info("udp bound to {}", address);
+
+                var queueMsgOut = new ConcurrentLinkedQueue<ByteBuffer>();
+
                 while (true) {
                     var byteBuffer = ByteBuffer.allocate(buffSize);
-
                     //addSend is address of sender
                     var addSend = channelUdp.receive(byteBuffer);
                     // flip to ready read
@@ -59,10 +59,8 @@ public class MainStartServerUdp {
                 LoggingService.getInstance().getLogger().error("err while start server", e);
             }
         };
-
-
         new Thread(r).start();
-        var scanner = new Scanner(System.in);
+        /*var scanner = new Scanner(System.in);
         //waite server start
         scanner.nextInt();
         var list = Arrays.asList("phuvh", "vint", "haonc", "linhntm2");
@@ -93,6 +91,6 @@ public class MainStartServerUdp {
             }
         } catch (Exception e) {
             LoggingService.getInstance().getLogger().error("err while connect to server", e);
-        }
+        }*/
     }
 }

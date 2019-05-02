@@ -22,6 +22,5 @@ public class ActorSystemContainer {
     public ActorRef createNew(Props props) {
         return actorSystem.actorOf(props);
     }
-
     private ActorSystem actorSystem;
 }

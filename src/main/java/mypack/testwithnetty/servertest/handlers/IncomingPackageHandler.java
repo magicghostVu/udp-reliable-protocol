@@ -5,10 +5,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.DatagramPacket;
 import mypack.log.LoggingService;
-import mypack.testwithnetty.servertest.actors.LogicServerActor;
 import mypack.testwithnetty.servertest.actors.SocketServerActor;
 import mypack.testwithnetty.servertest.actors.msgs.ActiveChannelServer;
-import mypack.testwithnetty.servertest.network.RawDataPackage;
 
 
 //bắt tất cả các gói tin đến từ bất cứ client nào
@@ -27,6 +25,11 @@ public class IncomingPackageHandler extends SimpleChannelInboundHandler<Datagram
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) {
         LoggingService.getInstance().getLogger().info("handler added");
+
+        ClassValue<String> stringClassValue = null;
+        //stringClassValue.get()
+
+        //Tup
 
     }
 
@@ -53,8 +56,8 @@ public class IncomingPackageHandler extends SimpleChannelInboundHandler<Datagram
             //LoggingService.getInstance().getLogger().info("size payload is {}", sizePayload);
             var payLoad = new byte[sizePayload];
             content.readBytes(payLoad);
-            var rawDataPackage = new RawDataPackage(sequenceId, acks, cmdId, payLoad, msg.sender());
-            LogicServerActor.getActorRef().tell(rawDataPackage, ActorRef.noSender());
+            //var rawDataPackage = new RawDataPackageReceived(sequenceId, acks, cmdId, payLoad, msg.sender());
+            //LogicServerActor.getActorRef().tell(rawDataPackage, ActorRef.noSender());
             //ByteBuf s = PooledByteBufAllocator.DEFAULT.buffer();
         } catch (Exception e) {
             LoggingService.getInstance().getLogger().error("err while read package from " + msg.sender(), e);

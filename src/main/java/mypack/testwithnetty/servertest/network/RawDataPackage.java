@@ -1,42 +1,25 @@
 package mypack.testwithnetty.servertest.network;
 
 import java.io.Serializable;
-import java.net.SocketAddress;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RawDataPackage implements Serializable {
-    private short sequenceId;
-    private short[] akcs;
-    private short cmdId;
-    private byte[] payload;
 
-    private SocketAddress sender;
 
-    public RawDataPackage(short sequenId, short[] akcs, short cmdId, byte[] payload, SocketAddress sender) {
-        this.sequenceId = sequenId;
-        this.akcs = akcs;
-        this.cmdId = cmdId;
-        this.payload = payload;
-        this.sender = sender;
+    private MajorPackage majorPackage;
+    private List<ShortPackageInclude> listPackageResend;
+
+    public RawDataPackage(MajorPackage majorPackage) {
+        this.majorPackage = majorPackage;
+        listPackageResend = new ArrayList<>();
     }
 
-
-    public short getSequenceId() {
-        return sequenceId;
+    public MajorPackage getMajorPackage() {
+        return majorPackage;
     }
 
-    public short[] getAkcs() {
-        return akcs;
-    }
-
-    public short getCmdId() {
-        return cmdId;
-    }
-
-    public byte[] getPayload() {
-        return payload;
-    }
-
-    public SocketAddress getSender() {
-        return sender;
+    public List<ShortPackageInclude> getListPackageResend() {
+        return listPackageResend;
     }
 }
