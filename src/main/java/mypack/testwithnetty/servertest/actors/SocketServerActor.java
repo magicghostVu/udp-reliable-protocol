@@ -4,6 +4,7 @@ import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -14,6 +15,7 @@ import mypack.testwithnetty.servertest.actors.msgs.ActiveChannelServer;
 import mypack.testwithnetty.servertest.handlers.MyChannelInit;
 
 //chỉ có vai trò gửi gói tin đến một địa chỉ xác định và nhận gói tin từ mọi nơi
+// xác định các gói tin đã nhận được, đã mất, ở đây
 public class SocketServerActor extends AbstractActor {
     public static Props props() {
         return Props.create(SocketServerActor.class);
@@ -62,6 +64,7 @@ public class SocketServerActor extends AbstractActor {
         this.ctx = msg.getCtx();
         ready = true;
         LoggingService.getInstance().getLogger().info("Server socket ready !!!!!!!!!!!");
+        // khởi tạo logic actor sau khi socket actor khởi động thành công
         LogicServerActor.initSelf();
     }
 

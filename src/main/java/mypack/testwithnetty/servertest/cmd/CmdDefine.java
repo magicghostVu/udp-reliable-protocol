@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum CmdDefine {
+
+    PING_PONG((short) -1),
     HAND_SHAKE((short) 0),
     LOGIN((short) 1);
-    private final short code;
+    private short code;
 
     CmdDefine(short code) {
         this.code = code;
@@ -19,7 +21,7 @@ public enum CmdDefine {
 
     private static Map<Short, CmdDefine> mapCached;
 
-    private static CmdDefine fromCode(short codeTake) {
+    public static CmdDefine fromCode(short codeTake) {
         if (mapCached != null) return mapCached.get(codeTake);
         else {
             synchronized (CmdDefine.class) {

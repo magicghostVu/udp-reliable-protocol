@@ -1,7 +1,8 @@
 open module mvn.java.ten {
 
-    //apache common
+    //apache common io
     requires org.apache.commons.io;
+    // common lang3
     requires org.apache.commons.lang3;
 
 

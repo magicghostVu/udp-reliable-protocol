@@ -1,12 +1,21 @@
 package mypack.testwithnetty.servertest.handlers;
 
 import akka.actor.ActorRef;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.DatagramPacket;
 import mypack.log.LoggingService;
+import mypack.testwithnetty.servertest.actors.LogicServerActor;
 import mypack.testwithnetty.servertest.actors.SocketServerActor;
 import mypack.testwithnetty.servertest.actors.msgs.ActiveChannelServer;
+import mypack.testwithnetty.servertest.actors.msgs.OnePackageCome;
+import mypack.testwithnetty.servertest.network.HeaderPackage;
+import mypack.testwithnetty.servertest.network.MajorPackage;
+import mypack.testwithnetty.servertest.network.RawDataPackage;
+import mypack.testwithnetty.servertest.network.ShortPackageInclude;
+
+import java.util.ArrayList;
 
 
 //bắt tất cả các gói tin đến từ bất cứ client nào
@@ -25,46 +34,94 @@ public class IncomingPackageHandler extends SimpleChannelInboundHandler<Datagram
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) {
         LoggingService.getInstance().getLogger().info("handler added");
-
-        ClassValue<String> stringClassValue = null;
-        //stringClassValue.get()
-
-        //Tup
-
     }
 
+
+    // đọc ra một raw data package và chuyển nó đến actor logic để xử lý tiếp
+    //sau hàm này, Bytebuf đã được giải phóng
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket msg) {
         //với Udp, ctx ở đây là kênh của server,
-        // vì tất cả các client không có kênh truyền, mà chỉ có địa chỉ gửi
+        // vì tất cả các client không có kênh truyền, mà chỉ có địa chỉ gửi đến
         var content = msg.content();
-        if (content.capacity() <= 0) return;
+        if (content.capacity() <= 0) {
+            LoggingService.getInstance().getLogger().warn("package empty from {} so discard", msg.sender());
+            return;
+        }
         try {
-            var sequenceId = content.readShort();
-            var sizeAcks = content.readShort();
-            if (sizeAcks > 32) {
-                String msgThrow = String.format("size akcs is too big (%s), so discard now", sizeAcks);
-                throw new IllegalArgumentException(msgThrow);
+
+            var majorPackage = readMajorPackage(content);
+
+            if (majorPackage == null) {
+                return;
             }
-            var acks = new short[sizeAcks];
-            for (var i = 0; i < sizeAcks; i++) {
-                acks[i] = content.readShort();
+
+            var listShortPackage = new ArrayList<ShortPackageInclude>();
+            var sizeListPackageInclude = content.readShort();
+            if (sizeListPackageInclude > 0) {
+                for (int i = 0; i < sizeListPackageInclude; i++) {
+                    listShortPackage.add(readShortPackage(content));
+                }
             }
-            var cmdId = content.readShort();
-            //
-            var sizePayload = content.writerIndex() - content.readerIndex();
-            //LoggingService.getInstance().getLogger().info("size payload is {}", sizePayload);
-            var payLoad = new byte[sizePayload];
-            content.readBytes(payLoad);
-            //var rawDataPackage = new RawDataPackageReceived(sequenceId, acks, cmdId, payLoad, msg.sender());
-            //LogicServerActor.getActorRef().tell(rawDataPackage, ActorRef.noSender());
-            //ByteBuf s = PooledByteBufAllocator.DEFAULT.buffer();
+            //todo: khởi tạo một RawPackage mới và chuyển nó đến cho logic actor
+            var r = new RawDataPackage(majorPackage, listShortPackage);
+            var onePackageCome = new OnePackageCome(r, msg.sender());
+            LogicServerActor.getActorRef().tell(onePackageCome, ActorRef.noSender());
         } catch (Exception e) {
             LoggingService.getInstance().getLogger().error("err while read package from " + msg.sender(), e);
         }
     }
 
-    // được gọi khi đọc xong 1 package
+    private ShortPackageInclude readShortPackage(ByteBuf byteBuf) {
+        var sequenceId = byteBuf.readShort();
+
+        var cmdId = byteBuf.readShort();
+
+        var sizePayload = byteBuf.readShort();
+        byte[] dataPayload = new byte[sizePayload];
+
+        byteBuf.readBytes(dataPayload);
+
+        return new ShortPackageInclude(sequenceId, cmdId, dataPayload);
+    }
+
+    // hàm này sẽ biến đổi ByteBuf truyền vào
+    private MajorPackage readMajorPackage(ByteBuf buf) {
+        var headerPackage = readHeaderPackage(buf);
+        if (headerPackage == null) return null;
+        try {
+            var cmdId = buf.readShort();
+            var sizePayload = buf.readShort();
+            byte[] dataPayload = new byte[sizePayload];
+            buf.readBytes(dataPayload);
+
+            var m = new MajorPackage(headerPackage, cmdId, dataPayload);
+
+            return m;
+        } catch (Exception e) {
+            LoggingService.getInstance().getLogger().error("err while read major package", e);
+            return null;
+        }
+
+    }
+
+
+    private HeaderPackage readHeaderPackage(ByteBuf buf) {
+        try {
+            var sequence = buf.readShort();
+            var lastReceived = buf.readShort();
+            byte[] acks = new byte[4];
+            buf.readBytes(acks);
+            var h = new HeaderPackage(sequence, lastReceived);
+            h.setAckBits(acks);
+            return h;
+        } catch (Exception e) {
+            LoggingService.getInstance().getLogger().error("err while read header package", e);
+            return null;
+        }
+    }
+
+    // được gọi mỗi khi đọc xong 1 package
     // đẩy tất cả các data từ server đang đợi ra bên ngoài
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {

@@ -1,18 +1,20 @@
 package mypack.testwithnetty.servertest.network;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
+
+// đây là class để contruct một package thực sự
+// có thể gửi đi qua network
 public class RawDataPackage implements Serializable {
 
 
     private MajorPackage majorPackage;
     private List<ShortPackageInclude> listPackageResend;
 
-    public RawDataPackage(MajorPackage majorPackage) {
+    public RawDataPackage(MajorPackage majorPackage, List<ShortPackageInclude> listPackageResend) {
         this.majorPackage = majorPackage;
-        listPackageResend = new ArrayList<>();
+        this.listPackageResend = listPackageResend;
     }
 
     public MajorPackage getMajorPackage() {

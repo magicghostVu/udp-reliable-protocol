@@ -62,4 +62,8 @@ public class HeaderPackage implements Serializable {
         var oldVal = ackBits[indexToTake];
         return (oldVal & (1 << indexToCheck)) != 0;
     }
+
+    public void setAckBits(byte[] ackBits) {
+        this.ackBits = ackBits;
+    }
 }

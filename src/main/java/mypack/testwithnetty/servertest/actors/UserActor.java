@@ -11,25 +11,22 @@ import java.net.SocketAddress;
 public class UserActor extends AbstractActor {
 
 
-    public static Props props(int uid, SocketAddress socketAddress) {
-        return Props.create(UserActor.class, uid, socketAddress);
+    public static Props props(int uid) {
+        return Props.create(UserActor.class, uid);
     }
 
     private int uid;
 
     // địa chỉ của user gửi đến
-    private SocketAddress socketAddress;
+    //private SocketAddress socketAddress;
 
 
     private long lastPackageTime;
 
-    public UserActor() {
-        this(-1, null);
-    }
 
-    public UserActor(int uid, SocketAddress socketAddress) {
+    public UserActor(int uid) {
         this.uid = uid;
-        this.socketAddress = socketAddress;
+        //this.socketAddress = socketAddress;
         lastPackageTime = System.currentTimeMillis();
     }
 
@@ -43,7 +40,4 @@ public class UserActor extends AbstractActor {
         return uid;
     }
 
-    public SocketAddress getSocketAddress() {
-        return socketAddress;
-    }
 }

@@ -2,8 +2,8 @@ package mypack.testwithnetty.servertest.network;
 
 import java.io.Serializable;
 
-// gửi đi và nhận đều là sử dụng class này
-// éo được vì in và out có các cấu trúc khác nhau
+//class này là một package chính được gửi đi/nhận về mỗi khi send
+// nó sẽ giúp track các package khác có nhận được hay chưa
 public class MajorPackage implements Serializable {
 
     private HeaderPackage header;
