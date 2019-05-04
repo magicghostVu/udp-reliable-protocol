@@ -14,6 +14,9 @@ open module mvn.java.ten {
 
     //netty
     requires io.netty.all;
+    requires javafx.graphics;
+    requires javafx.fxml;
+    requires javafx.controls;
 
 
     // akka
@@ -22,6 +25,9 @@ open module mvn.java.ten {
     requires typesafe.config;
     requires org.scala.java.eight.compat;
     requires jdk.unsupported;
+
+
+
 
     // gson
     requires java.sql;

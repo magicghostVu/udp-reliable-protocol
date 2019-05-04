@@ -29,7 +29,6 @@ public class WaitingSessionActor extends AbstractActor {
 
 
     public WaitingSessionActor() {
-
         crSequenceSend = new MutableShort();
         createdTime = MyUtils.getCrTimeInSecond();
     }
