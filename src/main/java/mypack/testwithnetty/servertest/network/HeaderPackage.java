@@ -1,8 +1,10 @@
 package mypack.testwithnetty.servertest.network;
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.Serializable;
 
-public class HeaderPackage implements Serializable {
+public class HeaderPackage implements Serializable , WritableToByteBuf{
 
     // giá trị này sẽ tăng lên mỗi khi có package được gửi đi, nó như là packageId
     private short sequenceId;
@@ -66,4 +68,13 @@ public class HeaderPackage implements Serializable {
     public void setAckBits(byte[] ackBits) {
         this.ackBits = ackBits;
     }
+
+    @Override
+    public void writeDataToByteBuf(ByteBuf target) {
+        target.writeShort(sequenceId);
+        target.writeShort(lastReceived);
+        target.writeBytes(ackBits);
+    }
+
+
 }

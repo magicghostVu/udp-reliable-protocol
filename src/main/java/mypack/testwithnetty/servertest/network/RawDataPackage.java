@@ -1,12 +1,14 @@
 package mypack.testwithnetty.servertest.network;
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.Serializable;
 import java.util.List;
 
 
 // đây là class để contruct một package thực sự
 // có thể gửi đi qua network
-public class RawDataPackage implements Serializable {
+public class RawDataPackage implements Serializable, WritableToByteBuf {
 
 
     private MajorPackage majorPackage;
@@ -23,5 +25,14 @@ public class RawDataPackage implements Serializable {
 
     public List<ShortPackageInclude> getListPackageResend() {
         return listPackageResend;
+    }
+
+    @Override
+    public void writeDataToByteBuf(ByteBuf target) {
+        majorPackage.writeDataToByteBuf(target);
+        target.writeShort(listPackageResend.size());
+        for (var e : listPackageResend) {
+            e.writeDataToByteBuf(target);
+        }
     }
 }

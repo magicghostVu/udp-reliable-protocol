@@ -1,11 +1,16 @@
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
 import junit.framework.TestCase;
 import mypack.testwithnetty.servertest.network.HeaderPackage;
+import org.apache.commons.collections4.BoundedMap;
+import org.apache.commons.collections4.map.FixedSizeSortedMap;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.ByteBuffer;
+import java.util.TreeMap;
 
 public class MyTest extends TestCase {
 
@@ -14,7 +19,7 @@ public class MyTest extends TestCase {
         var g = new byte[5];
 
         for (var i = 0; i < g.length; i++) {
-            g[i] = (byte) (i+1);
+            g[i] = (byte) (i + 1);
         }
 
         ByteBuffer bf = ByteBuffer.wrap(g);
@@ -45,34 +50,35 @@ public class MyTest extends TestCase {
     }
 
     public void testIo() {
-
         try {
-
             var s = new ByteArrayOutputStream();
-
             var stream = new ObjectOutputStream(s);
-
             var p = new HeaderPackage(1, 2);
-
             stream.writeObject(p);
-
             stream.flush();
-
-
             byte[] g = s.toByteArray();
             var t = new ByteArrayInputStream(g);
-
             var stream1 = new ObjectInputStream(t);
-
-
             HeaderPackage h = (HeaderPackage) stream1.readObject();
-
             System.out.println();
-
         } catch (Exception e) {
 
         }
+    }
 
+    public void testByteBuf() {
+        var allocator = ByteBufAllocator.DEFAULT;
+        var a = allocator.buffer();
+        a.writeInt(1);
+        a.writeInt(3);
+        var b = allocator.buffer();
+        b.writeBytes(a);
+        a.release();
+        int c = b.readInt();
+        int d = b.readInt();
+        b.release();
+        assertEquals(1, c);
+        assertEquals(3, d);
     }
 
 

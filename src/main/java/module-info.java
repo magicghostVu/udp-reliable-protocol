@@ -5,6 +5,8 @@ open module mvn.java.ten {
     // common lang3
     requires org.apache.commons.lang3;
 
+    requires org.apache.commons.collections4;
+
 
     // log4j2
     requires org.apache.logging.log4j;

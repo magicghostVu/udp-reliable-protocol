@@ -1,10 +1,12 @@
 package mypack.testwithnetty.servertest.network;
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.Serializable;
 
 //class này là một package chính được gửi đi/nhận về mỗi khi send
 // nó sẽ giúp track các package khác có nhận được hay chưa
-public class MajorPackage implements Serializable {
+public class MajorPackage implements Serializable, WritableToByteBuf {
 
     private HeaderPackage header;
     private short cmdId;
@@ -32,4 +34,10 @@ public class MajorPackage implements Serializable {
         return payload;
     }
 
+    @Override
+    public void writeDataToByteBuf(ByteBuf target) {
+        header.writeDataToByteBuf(target);
+        target.writeShort(cmdId);
+        target.writeBytes(payload);
+    }
 }

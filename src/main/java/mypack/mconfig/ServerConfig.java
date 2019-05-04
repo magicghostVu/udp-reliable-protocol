@@ -11,6 +11,8 @@ public class ServerConfig {
 
     private static int port;
 
+    private static long timeScanSession;
+
     public static void initConfig() {
         try {
             Properties p = new Properties();
@@ -19,6 +21,7 @@ public class ServerConfig {
             p.load(fiProp);
             host = p.getProperty("host");
             port = getIntProp(p, "port");
+            timeScanSession = getIntProp(p, "time_scan_session");
 
             LoggingService.getInstance().getLogger().info("Init Config server success!");
         } catch (Exception e) {
@@ -36,5 +39,9 @@ public class ServerConfig {
 
     public static int getPort() {
         return port;
+    }
+
+    public static long getTimeScanSession() {
+        return timeScanSession;
     }
 }
