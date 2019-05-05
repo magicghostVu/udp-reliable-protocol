@@ -100,6 +100,8 @@ public class LogicServerActor extends AbstractActor {
 
             mapSessionCreatedTimeByAddress.forEach((add, p) -> {
                 long timeElapsed = MyUtils.getCrTimeInSecond() - p.getS();
+
+                //nếu đã quá thời gian thì xóa bỏ session này
                 if (timeElapsed > ServerConfig.getTimeScanSession()) {
                     setWillRemove.add(add);
                 }
@@ -127,9 +129,7 @@ public class LogicServerActor extends AbstractActor {
         }
         // user chưa có trong hệ thống, check đến session và tạo mới session
         else {
-
             var rawDataPackage = newPackage.getData();
-
             // session đã tồn tại trong hệ thống rồi, gửi gói tin đến session đó
             if (mapSessionCreatedTimeByAddress.containsKey(newPackage.getAddSender())) {
                 mapSessionCreatedTimeByAddress.get(newPackage.getAddSender()).getF().tell(rawDataPackage, getSelf());

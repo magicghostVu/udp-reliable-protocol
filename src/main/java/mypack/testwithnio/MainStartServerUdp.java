@@ -29,6 +29,8 @@ public class MainStartServerUdp {
                     var addSend = channelUdp.receive(byteBuffer);
                     // flip to ready read
                     byteBuffer.flip();
+
+
                     var sizeData = -1;
                     if (byteBuffer.limit() > 0) {
                         sizeData = byteBuffer.limit();

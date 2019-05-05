@@ -1,7 +1,6 @@
 package mypack.testwithnetty.servertest.network;
 
 import io.netty.buffer.ByteBuf;
-
 import java.io.Serializable;
 import java.util.List;
 

@@ -1,14 +1,10 @@
 package mypack.testwithnetty.servertest.network;
-
 import io.netty.buffer.ByteBuf;
-
 import java.io.Serializable;
 
 public class ShortPackageInclude implements Serializable, WritableToByteBuf {
 
     private short sequenceId;
-
-
     private short cmdId;
     private byte[] payload;
 
@@ -34,6 +30,8 @@ public class ShortPackageInclude implements Serializable, WritableToByteBuf {
     public void writeDataToByteBuf(ByteBuf target) {
         target.writeShort(sequenceId);
         target.writeShort(cmdId);
+        // thêm size
+        target.writeShort((short) payload.length);
         target.writeBytes(payload);
     }
 }

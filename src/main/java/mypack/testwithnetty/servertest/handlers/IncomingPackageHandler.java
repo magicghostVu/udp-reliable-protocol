@@ -6,6 +6,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.DatagramPacket;
 import mypack.log.LoggingService;
+import mypack.mutils.MyUtils;
 import mypack.testwithnetty.servertest.actors.LogicServerActor;
 import mypack.testwithnetty.servertest.actors.SocketServerActor;
 import mypack.testwithnetty.servertest.actors.msgs.ActiveChannelServer;
@@ -49,13 +50,10 @@ public class IncomingPackageHandler extends SimpleChannelInboundHandler<Datagram
             return;
         }
         try {
-
-            var majorPackage = readMajorPackage(content);
-
+            var majorPackage = MyUtils.readMajorPackage(content);
             if (majorPackage == null) {
                 return;
             }
-
             var listShortPackage = new ArrayList<ShortPackageInclude>();
             var sizeListPackageInclude = content.readShort();
             if (sizeListPackageInclude > 0) {
@@ -73,52 +71,7 @@ public class IncomingPackageHandler extends SimpleChannelInboundHandler<Datagram
     }
 
     private ShortPackageInclude readShortPackage(ByteBuf byteBuf) {
-        var sequenceId = byteBuf.readShort();
-
-        var cmdId = byteBuf.readShort();
-
-        var sizePayload = byteBuf.readShort();
-        byte[] dataPayload = new byte[sizePayload];
-
-        byteBuf.readBytes(dataPayload);
-
-        return new ShortPackageInclude(sequenceId, cmdId, dataPayload);
-    }
-
-    // hàm này sẽ biến đổi ByteBuf truyền vào
-    private MajorPackage readMajorPackage(ByteBuf buf) {
-        var headerPackage = readHeaderPackage(buf);
-        if (headerPackage == null) return null;
-        try {
-            var cmdId = buf.readShort();
-            var sizePayload = buf.readShort();
-            byte[] dataPayload = new byte[sizePayload];
-            buf.readBytes(dataPayload);
-
-            var m = new MajorPackage(headerPackage, cmdId, dataPayload);
-
-            return m;
-        } catch (Exception e) {
-            LoggingService.getInstance().getLogger().error("err while read major package", e);
-            return null;
-        }
-
-    }
-
-
-    private HeaderPackage readHeaderPackage(ByteBuf buf) {
-        try {
-            var sequence = buf.readShort();
-            var lastReceived = buf.readShort();
-            byte[] acks = new byte[4];
-            buf.readBytes(acks);
-            var h = new HeaderPackage(sequence, lastReceived);
-            h.setAckBits(acks);
-            return h;
-        } catch (Exception e) {
-            LoggingService.getInstance().getLogger().error("err while read header package", e);
-            return null;
-        }
+        return MyUtils.readShortPackage(byteBuf);
     }
 
     // được gọi mỗi khi đọc xong 1 package

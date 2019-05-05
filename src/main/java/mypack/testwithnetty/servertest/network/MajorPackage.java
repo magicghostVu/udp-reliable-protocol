@@ -38,6 +38,9 @@ public class MajorPackage implements Serializable, WritableToByteBuf {
     public void writeDataToByteBuf(ByteBuf target) {
         header.writeDataToByteBuf(target);
         target.writeShort(cmdId);
+
+        // viết thêm kích cỡ cho dễ đọc
+        target.writeShort((short) payload.length);
         target.writeBytes(payload);
     }
 }

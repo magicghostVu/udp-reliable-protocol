@@ -42,13 +42,9 @@ public class MyTaskTest extends Task<Void> {
 
 
     //todo:logic here
-    //this function will run on main thread
     @Override
     protected void updateProgress(long workDone, long max) {
         super.updateProgress(workDone, max);
-
-        //context.getLabelMsg().setText("update to " + workDone);
-
         updateMessage("update to "+ workDone);
 
     }
