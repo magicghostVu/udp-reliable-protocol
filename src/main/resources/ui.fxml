@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mypack.uifxtestnetwork.MController">
    <children>
-      <Label fx:id="labelMsg" layoutX="95.0" layoutY="69.0" prefHeight="17.0" prefWidth="137.0" text="Msg" />
-      <TextArea layoutX="95.0" layoutY="100.0" prefHeight="200.0" prefWidth="443.0" />
+      <Label fx:id="labelHost" layoutX="95.0" layoutY="69.0" prefHeight="17.0" prefWidth="37.0" text="Host" />
+      <TextField fx:id="textHost" layoutX="167.0" layoutY="65.0" />
+      <Label layoutX="95.0" layoutY="104.0" text="Port" />
+      <TextField fx:id="textPort" layoutX="167.0" layoutY="100.0" />
+      <Button fx:id="btnInitConnect" layoutX="391.0" layoutY="100.0" mnemonicParsing="false" onAction="#initConnect" text="Init Connection" />
+      <Label fx:id="labelMsg" layoutX="31.0" layoutY="369.0" prefHeight="17.0" prefWidth="516.0" text="Msg Here" />
    </children>
 </AnchorPane>

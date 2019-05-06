@@ -1,5 +1,7 @@
 package mypack.testwithnetty.servertest.network;
+
 import io.netty.buffer.ByteBuf;
+
 import java.io.Serializable;
 
 public class ShortPackageInclude implements Serializable, WritableToByteBuf {

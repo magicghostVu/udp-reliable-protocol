@@ -1,10 +1,11 @@
 package mypack.uifxtestnetwork;
 
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import mypack.log.LoggingService;
-import mypack.uifxtestnetwork.task.MyTaskTest;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -13,41 +14,25 @@ public class MController implements Initializable {
 
 
     @FXML
-    private Label labelMsg;
+    private TextField textHost;
+
+    @FXML
+    private TextField textPort;
+
+    @FXML
+    private Button btnInitConnect;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         LoggingService.getInstance().getLogger().info("MController init done!");
-
-
-        MyTaskTest taskTest = new MyTaskTest(this);
-
-
-        labelMsg.textProperty().bind(taskTest.messageProperty());
-        new Thread(taskTest).start();
-
-        Runnable r = () -> {
-            try {
-                for (int i = 0; i < 10; i++) {
-                    taskTest.addJob();
-                    Thread.sleep(1000);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        };
-
-        new Thread(r).start();
-
-
     }
 
 
-    public Label getLabelMsg() {
-        return labelMsg;
+    // run on main thread
+    public void initConnect(Event e) {
+        LoggingService.getInstance().getLogger().info("init connect clicked");
+        btnInitConnect.setDisable(true);
     }
 
-    public void setLabelMsg(Label labelMsg) {
-        this.labelMsg = labelMsg;
-    }
 }
