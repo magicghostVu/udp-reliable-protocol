@@ -1,4 +1,3 @@
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import junit.framework.TestCase;
 import mypack.mutils.MyUtils;
@@ -6,9 +5,6 @@ import mypack.testwithnetty.servertest.network.HeaderPackage;
 import mypack.testwithnetty.servertest.network.MajorPackage;
 import mypack.testwithnetty.servertest.network.RawDataPackage;
 import mypack.testwithnetty.servertest.network.ShortPackageInclude;
-import org.apache.commons.collections4.BoundedMap;
-import org.apache.commons.collections4.map.FixedSizeSortedMap;
-import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -16,7 +12,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.TreeMap;
 
 public class MyTest extends TestCase {
 
@@ -124,6 +119,26 @@ public class MyTest extends TestCase {
         b.release();
         assertEquals(1, c);
         assertEquals(3, d);
+    }
+
+    public void testEdian() {
+        var b = ByteBuffer.allocate(4);
+
+        b.putInt(103203);
+
+        b.flip();
+
+        //byte y = (byte) 130;
+
+        var g = new byte[4];
+
+        for (int i = 0; i < g.length; i++) {
+            g[i] = b.get();
+        }
+
+        System.out.println();
+
+
     }
 
     public void testUnsignedShort() {

@@ -2,12 +2,11 @@ package mypack.uifxtestnetwork.servicenetwork;
 
 
 import akka.actor.ActorRef;
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import mypack.log.LoggingService;
 import mypack.mconfig.ServerConfig;
 import mypack.mutils.MyUtils;
-import mypack.testwithnetty.servertest.network.MajorPackage;
+import mypack.testwithnetty.servertest.network.RawDataPackage;
 import mypack.testwithnetty.servertest.network.ShortPackageInclude;
 
 import java.net.InetSocketAddress;
@@ -71,7 +70,10 @@ public class ServiceNetwork {
                                 tmp.flip();
 
 
+                                // copy data từ nio buffer đến ByteBuf
                                 buf.writeBytes(tmp);
+
+
                                 var majorPackage = MyUtils.readMajorPackage(buf);
                                 var listInClude = new ArrayList<ShortPackageInclude>();
                                 var sizeInclude = buf.readShort();
@@ -82,15 +84,14 @@ public class ServiceNetwork {
                                     }
                                 }
 
-
+                                var dataPackage = new RawDataPackage(majorPackage, listInClude);
 
 
                             } catch (Exception e) {
                                 LoggingService.getInstance().getLogger().error("err in loop read package", e);
                             } finally {
-                                // return to pool byte
-                                buf.release();
-
+                                // xoá hết data
+                                buf.clear();
                                 // xóa hết data để đọc quay lại đọc tiếp
                                 tmp.clear();
                             }

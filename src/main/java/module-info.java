@@ -14,6 +14,9 @@ open module mvn.java.ten {
 
     //netty
     requires io.netty.all;
+
+
+    //java fx
     requires javafx.graphics;
     requires javafx.fxml;
     requires javafx.controls;
